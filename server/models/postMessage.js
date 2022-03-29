@@ -1,4 +1,4 @@
-import Mongoose from "mongoose";
+import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema({
     title: String,
@@ -12,7 +12,7 @@ const postSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Data()
+        default: new Date()
     }
 
 })
