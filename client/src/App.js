@@ -11,10 +11,10 @@ export default function App() {
             <Container maxWidth="lg">
                 <Navbar />
                 <Routes>
-                    <Route path='/' exact component={Home} />
-                    <Route path='/auth' exact component={Auth} />
+                    <Route path='/auth' exact element={<Auth />} />
+                    <Route path='/' exact element={<Home />} />
                 </Routes>
-                <Home />
+
             </Container >
         </BrowserRouter>
 
