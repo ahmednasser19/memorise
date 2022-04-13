@@ -5,11 +5,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Input from './Input';
 import { GoogleLogin } from 'react-google-login'
 import Icon from './Icon';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 export default function Auth() {
     const classes = useStyles();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
-
+    const dispatch = useDispatch();
+    const history = useNavigate();
 
     const handleSubmit = () => {
 
@@ -28,6 +31,21 @@ export default function Auth() {
         handleShowPassword(false);
     };
 
+    const googleSuccess = async (res) => {
+        const result = res?.profileObj;
+        const token = res?.tokenId;
+        try {
+            dispatch({ type: 'AUTH', data: { result, token } });
+            history('/');
+        } catch (error) {
+            console.log(error);
+        }
+
+    };
+    const googleFailure = (error) => {
+        console.log(error)
+        console.log("Google Sing in was unsuccessful. Try again later")
+    };
     return (
         <Container component="main" maxWidth="xs">
             <Paper className={classes.paper} elevation={3}>
@@ -40,49 +58,53 @@ export default function Auth() {
                     ) : (
                         'Sign In'
                     )}</Typography>
-                <from className={classes.form} onSubmit={handleSubmit}></from>
-                <Grid container spacing={2}>
-                    {isSignup && (
-                        <>
-                            <Input name='firstName' label="First Name" handleChange={handleChange} autoFocus half />
-                            <Input name='firstName' label="First Name" handleChange={handleChange} half />
-                        </>
-                    )}
-                    <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
-                    <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? "text" : "password"} handleShowPassword={handleShowPassword} />
-                    {isSignup && (
-                        <>
-
-                            <Input name='confirmPassword' label="Repeat Password" handleChange={handleChange} type="password" />
-                        </>
-                    )}
-                </Grid>
-                <GoogleLogin
-                    clientId='GOOGLE ID'
-                    render={(renderProps) => (
-                        <Button className={classes.googleButton}
-                            color="primary"
-                            fullWidth
-                            onClick={renderProps.onClick}
-                            disable={renderProps.disabled}
-                            startIcon={<Icon />}
-                            variant="contained">
-                            Google Sign In
-                        </Button>)}
-                />
-                <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
-                    {isSignup ? 'Sign Up' : 'Sign In'}
-                </Button>
-                <Grid container justify="flex-end">
-                    <Grid item>
-                        <Button onClick={switchMode}>
-                            {isSignup ? 'Already have an account ? Sing In' : "Don't have an account? Sign Up"}
-                        </Button>
+                <from className={classes.form} onSubmit={handleSubmit}>
+                    <Grid container spacing={2}>
+                        {isSignup && (
+                            <>
+                                <Input name='firstName' label="First Name" handleChange={handleChange} autoFocus half />
+                                <Input name='firstName' label="First Name" handleChange={handleChange} half />
+                            </>
+                        )}
+                        <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
+                        <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? "text" : "password"} handleShowPassword={handleShowPassword} />
+                        {isSignup && (
+                            <>
+                                <Input name='confirmPassword' label="Repeat Password" handleChange={handleChange} type="password" />
+                            </>
+                        )}
                     </Grid>
 
-                </Grid>
+                    <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
+                        {isSignup ? 'Sign Up' : 'Sign In'}
+                    </Button>
+                    <GoogleLogin
+                        clientId="422204776344-0t8o05vq29qi78v8fke3rfedfjc1e78s.apps.googleusercontent.com"
+                        render={(renderProps) => (
+                            <Button className={classes.googleButton}
+                                color="primary"
+                                fullWidth
+                                onClick={renderProps.onClick}
+                                disabled={renderProps.disabled}
+                                startIcon={<Icon />}
+                                variant="contained">
+                                Google Sign In
+                            </Button>
+                        )}
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                        cookiePolicy="single_host_origin"
+                    />
+                    <Grid container justifyContent="flex-end">
+                        <Grid item>
+                            <Button onClick={switchMode}>
+                                {isSignup ? 'Already have an account ? Sing In' : "Don't have an account? Sign Up"}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </from>
             </Paper>
 
-        </Container>
+        </Container >
     )
 }
