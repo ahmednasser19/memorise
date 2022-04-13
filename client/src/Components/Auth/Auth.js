@@ -3,6 +3,8 @@ import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@
 import useStyles from './styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Input from './Input';
+import { GoogleLogin } from 'react-google-login'
+import Icon from './Icon';
 export default function Auth() {
     const classes = useStyles();
     const [showPassword, setShowPassword] = useState(false);
@@ -55,6 +57,19 @@ export default function Auth() {
                         </>
                     )}
                 </Grid>
+                <GoogleLogin
+                    clientId='GOOGLE ID'
+                    render={(renderProps) => (
+                        <Button className={classes.googleButton}
+                            color="primary"
+                            fullWidth
+                            onClick={renderProps.onClick}
+                            disable={renderProps.disabled}
+                            startIcon={<Icon />}
+                            variant="contained">
+                            Google Sign In
+                        </Button>)}
+                />
                 <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
                     {isSignup ? 'Sign Up' : 'Sign In'}
                 </Button>
