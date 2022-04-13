@@ -7,18 +7,31 @@ import { GoogleLogin } from 'react-google-login'
 import Icon from './Icon';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { signup, signin } from '../../actions/auth'
+const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
+
 export default function Auth() {
     const classes = useStyles();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
+    const [formData, setFormData] = useState(initialState);
     const dispatch = useDispatch();
     const history = useNavigate();
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
 
+        if (isSignup) {
+            dispatch(signup(formData, history));
+        } else {
+            dispatch(signin(formData, history));
+
+        }
     };
 
-    const handleChange = () => {
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value }) //handle the current input 
 
     };
 
@@ -58,12 +71,12 @@ export default function Auth() {
                     ) : (
                         'Sign In'
                     )}</Typography>
-                <from className={classes.form} onSubmit={handleSubmit}>
+                <form className={classes.form} onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         {isSignup && (
                             <>
                                 <Input name='firstName' label="First Name" handleChange={handleChange} autoFocus half />
-                                <Input name='firstName' label="First Name" handleChange={handleChange} half />
+                                <Input name='lastName' label="Last Name" handleChange={handleChange} half />
                             </>
                         )}
                         <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
@@ -102,7 +115,7 @@ export default function Auth() {
                             </Button>
                         </Grid>
                     </Grid>
-                </from>
+                </form>
             </Paper>
 
         </Container >
